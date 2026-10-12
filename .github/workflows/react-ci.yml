@@ -1,4 +1,4 @@
-name: React CI Pipeline
+name: React Docker CI Pipeline
 
 on:
   push:
@@ -15,9 +15,11 @@ jobs:
         working-directory: my-devops-app
 
     steps:
+      # Step 1: Download source code
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      # Step 2: Install Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -25,11 +27,18 @@ jobs:
           cache: 'npm'
           cache-dependency-path: my-devops-app/package-lock.json
 
+      # Step 3: Install dependencies
       - name: Install Dependencies
         run: npm ci
 
+      # Step 4: Run tests
       - name: Run Tests
         run: npm test
 
-      - name: Build Application
+      # Step 5: Build React
+      - name: Build React Application
         run: npm run build
+
+      # Step 6: Build Docker image
+      - name: Build Docker Image
+        run: docker build -t react-devops:ci .
